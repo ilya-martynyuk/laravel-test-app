@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  laravel-db:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - laravel-db:/var/lib/mysql
+    ports:
+      - 3307:3306
+    entrypoint:
+      sh -c "
+      echo 'CREATE DATABASE IF NOT EXISTS laravel_db;' > /docker-entrypoint-initdb.d/init.sql;
+      /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      "
+    networks:
+      laravel-my-app:
+
+  laravel-app:
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - DB_HOST=laravel-db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - DB_DATABASE=laravel_db
+    volumes:
+      - ./app:/var/www/laravel_docker
+    depends_on:
+      - laravel-db
+    networks:
+      laravel-my-app:
+
+networks:
+  laravel-my-app:
+    driver: bridge
+
+volumes:
+  laravel-db:
