@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  laravel-db:
+  mysql:
     image: mysql:5.7
     restart: unless-stopped
     environment:
@@ -11,7 +11,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - laravel-db:/var/lib/mysql
+      - laravel-education-db:/var/lib/mysql
     ports:
       - 3307:3306
     entrypoint:
@@ -20,30 +20,33 @@ services:
       /usr/local/bin/docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
       "
     networks:
-      laravel-my-app:
+      - laravel-education-net
 
-  laravel-app:
+  php-fpm:
     build:
       context: .
       dockerfile: docker/php-fpm/Dockerfile
-    ports:
-      - 8000:8000
-    environment:
-      - DB_HOST=laravel-db
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-      - DB_DATABASE=laravel_db
     volumes:
-      - ./app:/var/www/laravel_docker
+      - ./app:/var/www/app
     depends_on:
-      - laravel-db
+      - mysql
     networks:
-      laravel-my-app:
+      - laravel-education-net
+
+  nginx:
+    build:
+      context: docker/nginx
+    volumes:
+      - ./:/var/www/app
+    depends_on:
+      - php-fpm
+    ports:
+      - 8085:80
+    networks:
+      - laravel-education-net
 
 networks:
-  laravel-my-app:
-    driver: bridge
+  laravel-education-net:
 
 volumes:
-  laravel-db:
+  laravel-education-db:

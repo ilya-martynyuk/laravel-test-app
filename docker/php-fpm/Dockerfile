@@ -36,4 +36,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin && \
     mv /usr/local/bin/composer.phar /usr/local/bin/composer
 
-WORKDIR /var/www/laravel_docker
+WORKDIR /var/www/app
