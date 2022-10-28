@@ -46,13 +46,13 @@
                                 <td class="py-4 px-6">{{ $user->email }}</td>
                                 <td class="py-4 px-6">
                                     <form action="{{ route('users.destroy',$user->id) }}" method="POST">
-                                        <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-                                        <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
+                                        <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">{{ __("Show") }}</a>
+                                        <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">{{ __("Edit") }}</a>
 
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this user?')"
-                                                class="btn btn-danger">Delete</button>
+                                        <button type="submit" onclick="return confirm('{{ __("Are you sure you want to delete this user?") }}')"
+                                                class="btn btn-danger">{{ __("Delete") }}</button>
                                     </form>
                                 </td>
                             </tr>
