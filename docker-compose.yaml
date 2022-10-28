@@ -37,7 +37,7 @@ services:
     build:
       context: docker/nginx
     volumes:
-      - ./:/var/www/app
+      - ./app:/var/www/app
     depends_on:
       - php-fpm
     ports:
